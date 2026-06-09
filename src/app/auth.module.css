@@ -1,0 +1,156 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-main);
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(197, 160, 89, 0.04) 0%, transparent 60%);
+  padding: 24px;
+}
+
+.authCard {
+  width: 100%;
+  max-width: 440px;
+  padding: 40px;
+  border-radius: var(--radius-lg);
+  animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-title);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.logoIcon {
+  color: var(--accent-gold);
+}
+
+.title {
+  font-family: var(--font-title);
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.sub {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.alertError {
+  background: var(--accent-danger-glow);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+  color: #ff859b;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.alertSuccess {
+  background: var(--accent-emerald-glow);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #a7f3d0;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.submitBtn {
+  background: var(--accent-gold);
+  color: #07090e;
+  width: 100%;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: var(--transition-smooth);
+  box-shadow: 0 4px 14px var(--accent-gold-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: var(--accent-gold-dark);
+  transform: translateY(-1px);
+}
+
+.submitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.link {
+  color: var(--accent-gold);
+  font-weight: 500;
+  transition: var(--transition-smooth);
+}
+
+.link:hover {
+  color: var(--accent-gold-dark);
+  text-decoration: underline;
+}
+
+/* MFA Specific style adjustments */
+.mfaQrBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  margin-bottom: 24px;
+}
+
+.qrCodeImg {
+  border: 8px solid white;
+  border-radius: var(--radius-sm);
+  background: white;
+}
+
+.secretText {
+  font-family: monospace;
+  font-size: 0.9rem;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: var(--accent-gold);
+  user-select: all;
+}

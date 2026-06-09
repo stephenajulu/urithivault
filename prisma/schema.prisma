@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                 String       @id @default(uuid())
+  email              String       @unique
+  passwordHash       String
+  role               String       @default("owner") // "owner" | "trustee" | "beneficiary" | "admin"
+  mfaSecret          String?
+  mfaEnabled         Boolean      @default(false)
+  encryptedVdk       String?      // Symmetric Vault Data Key encrypted with owner password key
+  vdkSalt            String?      // Salt used to derive password key
+  subscriptionTier   String       @default("basic") // "basic" | "premium" | "enterprise"
+  subscriptionStatus String       @default("active") // "active" | "unpaid"
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  assets             Asset[]
+  beneficiaries      Beneficiary[] @relation("UserBeneficiaries")
+  trustees           Trustee[]    @relation("UserTrustees")
+  claims             VaultClaim[] @relation("UserClaims")
+  filedClaims        VaultClaim[] @relation("ClaimantClaims")
+  auditLogs          AuditLog[]
+}
+
+model Asset {
+  id               String        @id @default(uuid())
+  ownerId          String
+  owner            User          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  category         String        // "bank" | "land" | "sacco" | "chama" | "video" | "document"
+  metadataTags     String?       // comma-separated tags or descriptors
+  encryptedPayload String        // AES-GCM Encrypted JSON blob of asset fields
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  accesses         AssetAccess[]
+}
+
+model Beneficiary {
+  id           String        @id @default(uuid())
+  ownerId      String
+  owner        User          @relation("UserBeneficiaries", fields: [ownerId], references: [id], onDelete: Cascade)
+  email        String
+  phone        String?
+  relationship String?
+  verified     Boolean       @default(false)
+  accesses     AssetAccess[]
+}
+
+model Trustee {
+  id        String   @id @default(uuid())
+  ownerId   String
+  owner     User     @relation("UserTrustees", fields: [ownerId], references: [id], onDelete: Cascade)
+  email     String
+  phone     String?
+  role      String   @default("verifier") // "verifier" | "lawyer" | "doctor"
+  verified  Boolean  @default(false)
+}
+
+model AssetAccess {
+  id                String      @id @default(uuid())
+  assetId           String
+  asset             Asset       @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  beneficiaryId     String
+  beneficiary       Beneficiary @relation(fields: [beneficiaryId], references: [id], onDelete: Cascade)
+  encryptedShareKey String      // Vault Data Key encrypted with beneficiary public key
+}
+
+model VaultClaim {
+  id                String     @id @default(uuid())
+  userId            String     // The Owner under claim
+  user              User       @relation("UserClaims", fields: [userId], references: [id], onDelete: Cascade)
+  claimantId        String     // The Beneficiary filing the claim
+  claimant          User       @relation("ClaimantClaims", fields: [claimantId], references: [id], onDelete: Cascade)
+  status            String     @default("pending") // "pending" | "approved" | "cancelled"
+  proofDocumentUrl  String?
+  cooldownStarts    DateTime   @default(now())
+  cooldownEnds      DateTime
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String   // "login" | "vault_edit" | "claim_initiated" | "override_triggered"
+  ipAddress String?
+  details   String?
+  createdAt DateTime @default(now())
+}
